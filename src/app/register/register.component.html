@@ -1,0 +1,18 @@
+<div class="row">
+  <div class="col-sm-6 col-sm-offset-3 form-box">
+    <app-step1 [hidden]="step != 1" (step1Data) = "getFormData($event)"></app-step1>
+    <app-step2 [hidden]="step != 2" (step2Data) = "getFormData($event)" (prev) = "prev()"></app-step2>
+    <app-step3 [hidden]="step != 3" (step3Data) = "getFormData($event)" (prev) = "prev()"></app-step3>
+    <app-step4 [hidden]="step != 4" (signup) = "signUp()" [user] = "userInfo" (prev) = "prev()"></app-step4>
+    <div *ngIf = "step == 5">
+        <div class="form-top">
+            <div class="form-top-left">
+                <h3>Registration was successful!</h3>
+            </div>
+            <div class="form-top-right">
+                <i class="fa fa-check"></i>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>

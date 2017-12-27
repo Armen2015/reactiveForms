@@ -1,0 +1,50 @@
+<form >
+  <div class="form-top" >
+      <div class="form-top-left">
+          <h3>All Your Information</h3>
+          <label>First Name:</label> {{ user.firstName }}<br>
+          <label>Last Name:</label> {{ user.lastName }}<br>
+          <label>Country:</label> {{ user.country }}<br>
+          <label>City: </label> {{ user.city }}<br>
+          <label>Address: </label> {{ user.address }}<br>
+          <label>Address2: </label> {{ user.address2 || empty }}<br>
+          <label>Postal Code: </label> {{ user.postalCode }}<br>
+          <label>Legal: </label> {{ user.legal }}<br>
+          <label *ngIf = "user.companyName" >Company Name: </label>
+          <span *ngIf = "user.companyName" >{{ user.companyName }}<br></span>
+          <hr>
+          <label>User Name: </label> {{ user.userName }}<br>
+          <label>Package: </label> {{ user.package }}<br>
+          <span *ngIf = "user.package === packages.standard">
+            <label *ngIf = "user.facebook" >Facebook link: </label>
+            <span *ngIf = "user.facebook" >{{ user.facebook }}<br></span>
+            <label *ngIf = "user.twitter" >Twitter link: </label>
+            <span *ngIf = "user.twitter" >{{ user.twitter }}<br></span>
+          </span>
+          <span *ngIf = "user.package === packages.premium">
+            <label>Info source: </label> {{ user.infoSource }}<br>
+            <label *ngIf = "user.sponsorUserName" >Sponsor username: </label>
+            <span *ngIf = "user.sponsorUserName" >{{ user.sponsorUserName }}<br></span>
+            <label *ngIf = "user.sponsorFirstName" >Sponsor firstname: </label>
+            <span *ngIf = "user.sponsorFirstName" >{{ user.sponsorFirstName }}<br></span>
+            <label *ngIf = "user.sponsorLastName" >Sponsor lastname: </label>
+            <span *ngIf = "user.sponsorLastName" >{{ user.sponsorLastName }}<br></span>
+          </span>
+          <hr>
+          <label>Credit Card number: </label> {{ user.cardNumber | cardnumber}}<br>
+          <label>Credit Card Name: </label> {{ user.cardName }}<br>
+          <label>Credit Card Cvc: </label> {{ user.cardCvc }}<br>
+          <label>Credit Card expiration date: </label> {{ user.cardExpDate | mydate }}<br>
+          <hr>
+          <label>Shipping Country: </label> {{ user.shipCountry }}<br>
+          <label>Shipping City: </label> {{ user.shipCity }}<br>
+          <label>Shipping Address: </label> {{ user.shipAddress }}<br>
+          <label>Shipping Address2: </label> {{ user.shipAddress2 || empty }}<br>
+          <label>Shipping Postal Code: </label> {{ user.shipPostalCode }}<br>
+      </div>
+  </div>
+  <div class="form-bottom">
+      <button type="button" class="btn btn-previous" (click)="prevBtn()">Previous</button>
+      <button type="button" class="btn" (click)="signUpBtn()">Sign up me!</button>
+  </div>
+</form>
