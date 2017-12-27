@@ -1,8 +1,8 @@
 import * as data from '../data.files/postal-codes.json';
 
-var obj = (<any>data);
+const obj = (<any>data);
 
-var legal = {
+const legal = {
     legalOptions: [
         { 
             id: 1, 

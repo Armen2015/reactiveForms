@@ -79,7 +79,7 @@ export class Step2Component implements OnInit {
   }
 
   nextBtn() {
-    var form = this.step2;
+    const form = this.step2;
     this.step2SubmitAttempt = true;
     if (!form.valid) {
       Object.keys(form.controls).forEach(field => { 
@@ -125,7 +125,7 @@ export class Step2Component implements OnInit {
 
   //
   isPassTheSame() {
-    var element = this.step2.get('confirmPassord');
+    let element = this.step2.get('confirmPassord');
     return !element.touched || (element.value == this.step2.get('password').value);
   }
 
@@ -142,7 +142,7 @@ export class Step2Component implements OnInit {
         this.loading = false;
         if(!data) this.errorSponser = true;
         else {
-          for(var key in data){
+          for(let key in data){
             if (key == 'sponsorFirstName') this.sponsorFirstName = data[key];
             if (key == 'sponsorLastName') this.sponsorLastName = data[key];
           }
@@ -187,7 +187,7 @@ export class Step2Component implements OnInit {
 
   // Checks form element valid or not
   isFieldValid(form_element: string) {
-    var element = this.step2.get(form_element);
+    let element = this.step2.get(form_element);
     return !element.valid && element.touched || (element.untouched && this.step2SubmitAttempt);
   }
 
@@ -214,7 +214,7 @@ export class Step2Component implements OnInit {
   
   // 
   packageDataChange() {
-    var packageType = this.step2.get('package').value;
+    let packageType = this.step2.get('package').value;
     if(packageType === 'Standard Package') {
       this.updateValidators(this.step2.get('facebook'), [ 
         Validators.required,
@@ -237,7 +237,7 @@ export class Step2Component implements OnInit {
 
   // Check if username exists
   checkUserName(element) {
-    var name = element.value;
+    let name = element.value;
     this.userService.checkUser(name)
     .subscribe(
       data => {

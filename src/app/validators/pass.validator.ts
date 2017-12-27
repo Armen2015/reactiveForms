@@ -1,7 +1,7 @@
 import { AbstractControl } from '@angular/forms';
 
 export function ValidatePass(control: AbstractControl) {
-    var value = control.value
+    let value = control.value
   if (!/\d/.test(value) 
       || !/[a-z]/.test(value) 
       || !/[A-Z]/.test(value)

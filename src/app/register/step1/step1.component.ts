@@ -52,11 +52,11 @@ export class Step1Component implements OnInit {
 
   // Next button
   nextBtn() {
-    var form = this.step1;
+    const form = this.step1;
     this.step1SubmitAttempt = true;
     if (!form.valid) {
       Object.keys(form.controls).forEach(field => { 
-        var control = form.get(field);            
+        let control = form.get(field);            
         control.markAsTouched({ onlySelf: true });       
       });
     }
@@ -80,7 +80,7 @@ export class Step1Component implements OnInit {
 
   // Checks form element valid or not
   isFieldValid(form_element: string) {
-    var element = this.step1.get(form_element);
+    let element = this.step1.get(form_element);
     return !element.valid && element.touched || (element.untouched && this.step1SubmitAttempt);
   }
 
@@ -88,16 +88,16 @@ export class Step1Component implements OnInit {
   emitCheckboxClick(){
     this.isDataChecked = !this.isDataChecked;
     this.inputsStateToggle();
-    var element = this.step1.get('isDataChecked');
+    let element = this.step1.get('isDataChecked');
     element.setValue(!element.value);
   }
 
   // If checkbox triggered, add filled data to shiping data or disable inputs
   inputsStateToggle() {
     if(this.isDataChecked) {
-      for(var key in this.step1.controls) {
+      for(let key in this.step1.controls) {
         if(key.substring(0, 4) === 'ship') {
-          var dataKey = key.slice(4);
+          let dataKey = key.slice(4);
           dataKey = dataKey.charAt(0).toLowerCase() + dataKey.slice(1);
           this.step1.get(key).disable();
           this.step1.get(key).setValue(this.step1.get(dataKey).value);
@@ -105,7 +105,7 @@ export class Step1Component implements OnInit {
       }
     }
     else {
-      for(var key in this.step1.controls) {
+      for(let key in this.step1.controls) {
         if(key.substring(0, 4) === 'ship') {
           this.step1.get(key).enable();
         }
@@ -115,9 +115,9 @@ export class Step1Component implements OnInit {
 
   // watch for data changes
   shippingDataChange(form_element){
-    var form = this.step1;
+    const form = this.step1;
     if(form_element === 'country'){
-      var regex = form.get('country').value.Regex;
+      let regex = form.get('country').value.Regex;
       form.get('postalCode').setValidators([
           Validators.required,
           Validators.pattern(regex)
@@ -125,7 +125,7 @@ export class Step1Component implements OnInit {
       form.get('postalCode').updateValueAndValidity();
     }
     if(form_element === 'shipCountry'){
-      var regex = form.get('shipCountry').value.Regex;
+      let regex = form.get('shipCountry').value.Regex;
       form.get('shipPostalCode').setValidators([
           Validators.required,
           Validators.pattern(regex)
@@ -133,7 +133,7 @@ export class Step1Component implements OnInit {
       form.get('shipPostalCode').updateValueAndValidity();
     }
     if(form_element === 'legal'){
-      var value = form.get(form_element).value.label;
+      let value = form.get(form_element).value.label;
       if(value === 'Company'){
         this.isLegalCompany = true;
         this.updateValidators(form.get('companyName'), [ Validators.required ]);
@@ -147,7 +147,7 @@ export class Step1Component implements OnInit {
 
     // If checkbox checked, watch for data changes
     if(!this.isDataChecked) return;
-    var shipKey = 'ship' + form_element.charAt(0).toUpperCase() + form_element.slice(1);
+    let shipKey = 'ship' + form_element.charAt(0).toUpperCase() + form_element.slice(1);
     form.get(shipKey).setValue(form.get(form_element).value);
   }
 

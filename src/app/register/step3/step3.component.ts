@@ -40,7 +40,7 @@ export class Step3Component implements OnInit {
   }
 
   nextBtn() {
-    var form = this.step3;
+    const form = this.step3;
     this.step3SubmitAttempt = true;
     if (!form.valid) {
       Object.keys(form.controls).forEach(field => { 
@@ -61,7 +61,7 @@ export class Step3Component implements OnInit {
 
   // Sets error class to an element, when it is not valid
   setClass(form_element: string) {
-    var form = this.step3;
+    const form = this.step3;
     return {
       'input-error': this.isFieldValid(form_element)
     };
@@ -69,7 +69,7 @@ export class Step3Component implements OnInit {
 
   // Checks form element valid or not
   isFieldValid(form_element: string) {
-    var element = this.step3.get(form_element);
+    let element = this.step3.get(form_element);
     return !element.valid && element.touched || (element.untouched && this.step3SubmitAttempt);
   }
 
@@ -83,7 +83,7 @@ export class Step3Component implements OnInit {
 
   // Validates card number
   numberChange() {
-    var value = this.step3.get('cardNumber').value;
+    let value = this.step3.get('cardNumber').value;
     this.cardType =  this.detectCardType(value);
     if(this.cardType !== 'amex') this.cardMask = '0000 0000 0000 0000';
     else this.cardMask = '0000 0000 0000 000';
@@ -94,14 +94,13 @@ export class Step3Component implements OnInit {
   // Watch for date changes
   dateChange(e) {
     if(e.length == 4) {
-      var date = new Date();
-      var month = date.getMonth() + 1;
-      var year = date.getFullYear();
+      let date = new Date();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
       
-      var cardDateMonth = +e.substring(0, 2);
-      var cardDateYear = +('20' + e.substring(2));
-      console.log(cardDateYear, year);
-
+      let cardDateMonth = +e.substring(0, 2);
+      let cardDateYear = +('20' + e.substring(2));
+   
       if(cardDateYear === year && cardDateMonth > month) this.cardDateValid = true;
       if(cardDateYear < year) this.cardDateValid = false;
       if( cardDateYear > year && cardDateYear <= (year + 10) ) this.cardDateValid = true;
@@ -111,7 +110,7 @@ export class Step3Component implements OnInit {
 
   // Checks date
   checkDate(e, position, start, end) {
-    var length = e.target.value.length;
+    let length = e.target.value.length;
     if(e.target.value[2] === '/' && position == 2) position = 3;
 
     if(length === position) {
@@ -141,7 +140,7 @@ export class Step3Component implements OnInit {
 
   // 
   detectCardType(number) {
-    var re = {
+    let re = {
         electron: /^(4026|417500|4405|4508|4844|4913|4917)\d+$/,
         maestro: /^(5018|5020|5038|5612|5893|6304|6759|6761|6762|6763|0604|6390)\d+$/,
         visa: /^4[0-9]{12}(?:[0-9]{3})?$/,
@@ -155,12 +154,11 @@ export class Step3Component implements OnInit {
         //jcb: /^(?:2131|1800|35\d{3})\d{11}$/
     }
 
-    for(var key in re) {
+    for(let key in re) {
         if(re[key].test(number)) {
             return key
         }
     }
     return null;
   }
-
 }

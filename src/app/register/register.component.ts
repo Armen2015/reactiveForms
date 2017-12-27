@@ -8,7 +8,7 @@ import { User } from '../models/user';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-  step = 3;
+  step = 2;
   user: User;
   userInfo: User;
 
@@ -20,9 +20,9 @@ export class RegisterComponent implements OnInit {
   }
 
   getFormData(e) {
-    var form = JSON.parse(JSON.stringify(e.getRawValue()));// cast FormGroup object to default js object
+    const form = JSON.parse(JSON.stringify(e.getRawValue()));// cast FormGroup object to default js object
     // sets form values to user object
-    for(var key in form) {
+    for(let key in form) {
       if(form[key] != null || key != 'confirmPassord') {
         this.user[key] = form[key];
       }
