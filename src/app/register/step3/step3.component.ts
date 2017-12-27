@@ -93,14 +93,15 @@ export class Step3Component implements OnInit {
 
   // Watch for date changes
   dateChange(e) {
-    if(e.length == 6) {
+    if(e.length == 4) {
       var date = new Date();
       var month = date.getMonth() + 1;
       var year = date.getFullYear();
       
       var cardDateMonth = +e.substring(0, 2);
-      var cardDateYear = +e.substring(2);
-      
+      var cardDateYear = +('20' + e.substring(2));
+      console.log(cardDateYear, year);
+
       if(cardDateYear === year && cardDateMonth > month) this.cardDateValid = true;
       if(cardDateYear < year) this.cardDateValid = false;
       if( cardDateYear > year && cardDateYear <= (year + 10) ) this.cardDateValid = true;
@@ -129,12 +130,11 @@ export class Step3Component implements OnInit {
   @HostListener('keydown', ['$event']) onKeyDown(e) {
     // enable backspace 
     if(e.keyCode == 8) return;
-    if(e.target.name === "form_credit_card_expiration_date"){
+    if(e.target.name === "form_credit_card_expiration_date") {
       if(this.checkDate(e, 0, 0, 1)) return;
       if(this.checkDate(e, 1, 0, 9)) return;
-      if(this.checkDate(e, 2, 2, 2)) return;
-      if(this.checkDate(e, 4, 0, 0)) return;
-      if(this.checkDate(e, 5, 1, 3)) return;
+      if(this.checkDate(e, 2, 1, 2)) return;
+      if(this.checkDate(e, 4, 0, 9)) return;
       return;
     }
   }

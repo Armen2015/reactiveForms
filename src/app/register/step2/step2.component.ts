@@ -16,7 +16,7 @@ export class Step2Component implements OnInit {
   @Output() prev: EventEmitter<boolean> = new EventEmitter<boolean>();
   step2: FormGroup;
   step2SubmitAttempt: boolean = false;
-  userNameValid: boolean;
+  userNameNotValid: boolean;
   sponsorUserName: string;
   sponsorFirstName: string;
   sponsorLastName: string;
@@ -51,6 +51,7 @@ export class Step2Component implements OnInit {
         ])
       ],
       password: ['', [ Validators.required, Validators.minLength(2), ValidatePass ]],
+      confirmPassord: ['', [ Validators.required, Validators.minLength(2), ValidatePass ]],
       //pass - RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
       package:  ['', Validators.required],
       facebook: [
@@ -86,13 +87,14 @@ export class Step2Component implements OnInit {
         control.markAsTouched({ onlySelf: true });       
       });
     } else {
-      if(this.userNameValid) return;
+      if(this.userNameNotValid) return;
       if(form.get('infoSource').value === 'Friend') {
         if(!this.isSponsorValid) {
           this.btnSubm = true;
           return;
         }
       }
+      if(!this.isPassTheSame()) return;
       this.step2Data.emit(form);
       this.step2SubmitAttempt = false;
     }
@@ -121,6 +123,13 @@ export class Step2Component implements OnInit {
     this.popup.show(this.popup.options);
   }
 
+  //
+  isPassTheSame() {
+    var element = this.step2.get('confirmPassord');
+    return !element.touched || (element.value == this.step2.get('password').value);
+  }
+
+  //
   findSponsorBtn(){
     this.errorSponser = false;
     if(this.sponsorUserName === '') return;
@@ -161,10 +170,16 @@ export class Step2Component implements OnInit {
 
   // Sets error class to an element, when it is not valid
   setClass(form_element: string) {
-    if(form_element === 'userName')
+    if(form_element === 'userName') {
       return {
-        'input-error': this.userNameValid || this.isFieldValid(form_element)
+        'input-error': this.userNameNotValid || this.isFieldValid(form_element)
       };
+    }
+    if(form_element === 'confirmPassord') {
+      return {
+        'input-error': !this.isPassTheSame() || this.isFieldValid(form_element)
+      };
+    }
     return {
       'input-error': this.isFieldValid(form_element)
     };
@@ -226,7 +241,7 @@ export class Step2Component implements OnInit {
     this.userService.checkUser(name)
     .subscribe(
       data => {
-        this.userNameValid = <boolean>data;
+        this.userNameNotValid = <boolean>data;
       },
       error => {}
     );

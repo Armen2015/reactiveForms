@@ -18,7 +18,7 @@
                placeholder="UserName..." 
                (keyup)="checkUserName(step2.get('userName'))"
             >
-            <span *ngIf = "userNameValid" class = 'user_alert'>Username already exists!</span>
+            <span *ngIf = "userNameNotValid" class = 'user_alert'>Username already exists!</span>
         </div>
         <div class="form-group">
             <label class="sr-only" for="form-password">Password</label>
@@ -29,7 +29,17 @@
                placeholder="Password..." 
             >
             <span *ngIf = "step2.get('password').touched && step2.get('password').value.length < 8 && !step2.get('password').valid" 
-                   class = 'user_alert'>Password must be at least 8 characters long</span>
+                   class = 'user_alert'>Password must be at least 8 characters long!</span>
+        </div>
+        <div class="form-group">
+            <label class="sr-only" for="form-password">Confirm Password</label>
+            <input class="form-control" type="password"
+               class="form-password form-control"
+               [ngClass]="setClass('confirmPassord')" 
+               formControlName="confirmPassord"
+               placeholder="Confirm Password..." 
+            >
+            <span *ngIf = "!isPassTheSame()" class = 'user_alert'>Passwords don't match!</span>
         </div>
         <div class="form-group">
             <input type="radio" name="package" 
