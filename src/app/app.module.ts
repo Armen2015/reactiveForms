@@ -40,7 +40,7 @@ import { Step4Component } from './register/step4/step4.component';
     NgxMaskModule.forRoot(),
     HttpClientModule,
     HttpModule,
-    PopupModule.forRoot()
+    PopupModule.forRoot(),
   ],
   providers: [
     UserService

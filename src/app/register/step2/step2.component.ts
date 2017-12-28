@@ -5,6 +5,7 @@ import { User } from '../../models/user';
 import { ValidatePass } from '../../validators/pass.validator';
 import { Popup } from 'ng2-opd-popup';
 import { Packages } from '../../models/packages';
+import * as _ from "lodash";
 
 @Component({
   selector: 'app-step2',
@@ -79,12 +80,11 @@ export class Step2Component implements OnInit {
   }
 
   nextBtn() {
-    const form = this.step2;
+    let form = _.assign(this.step2);
     this.step2SubmitAttempt = true;
     if (!form.valid) {
-      Object.keys(form.controls).forEach(field => { 
-        const control = form.get(field);            
-        control.markAsTouched({ onlySelf: true });       
+      _.forEach(form.controls, element => {         
+        element.markAsTouched({ onlySelf: true });       
       });
     } else {
       if(this.userNameNotValid) return;
@@ -125,7 +125,7 @@ export class Step2Component implements OnInit {
 
   //
   isPassTheSame() {
-    let element = this.step2.get('confirmPassord');
+    let element = _.assign(this.step2.get('confirmPassord'));
     return !element.touched || (element.value == this.step2.get('password').value);
   }
 
@@ -187,7 +187,7 @@ export class Step2Component implements OnInit {
 
   // Checks form element valid or not
   isFieldValid(form_element: string) {
-    let element = this.step2.get(form_element);
+    let element = _.assign(this.step2.get(form_element));
     return !element.valid && element.touched || (element.untouched && this.step2SubmitAttempt);
   }
 
@@ -205,7 +205,6 @@ export class Step2Component implements OnInit {
   //
   resetInfoSourceValues() {
     if(this.step2.get('infoSource').value != 'Friend') {
-      
       this.step2.get('sponsorUserName').setValue('');
       this.step2.get('sponsorFirstName').setValue('');
       this.step2.get('sponsorLastName').setValue('');
@@ -237,8 +236,7 @@ export class Step2Component implements OnInit {
 
   // Check if username exists
   checkUserName(element) {
-    let name = element.value;
-    this.userService.checkUser(name)
+    this.userService.checkUser(element.value)
     .subscribe(
       data => {
         this.userNameNotValid = <boolean>data;

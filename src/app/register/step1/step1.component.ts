@@ -3,6 +3,7 @@ import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { UserService } from '../../services/user.service';
 import { Options } from '../../models/options';
 import { User } from '../../models/user';
+import * as _ from "lodash";
 
 
 @Component({
@@ -52,12 +53,11 @@ export class Step1Component implements OnInit {
 
   // Next button
   nextBtn() {
-    const form = this.step1;
+    let form = _.assign(this.step1);
     this.step1SubmitAttempt = true;
     if (!form.valid) {
-      Object.keys(form.controls).forEach(field => { 
-        let control = form.get(field);            
-        control.markAsTouched({ onlySelf: true });       
+      _.forEach(form.controls, element => {         
+        element.markAsTouched({ onlySelf: true });       
       });
     }
     else {
@@ -68,7 +68,7 @@ export class Step1Component implements OnInit {
 
   // Sets error class to an element, when it is not valid
   setClass(form_element: string) {
-    if( this.isDataChecked && form_element.substring(0, 4) === 'ship') {
+    if( this.isDataChecked && _.startsWith(form_element, 'ship')) {
       return {
         'disabled': true
       };
@@ -80,7 +80,7 @@ export class Step1Component implements OnInit {
 
   // Checks form element valid or not
   isFieldValid(form_element: string) {
-    let element = this.step1.get(form_element);
+    let element = _.assign(this.step1.get(form_element));
     return !element.valid && element.touched || (element.untouched && this.step1SubmitAttempt);
   }
 
@@ -88,63 +88,70 @@ export class Step1Component implements OnInit {
   emitCheckboxClick(){
     this.isDataChecked = !this.isDataChecked;
     this.inputsStateToggle();
-    let element = this.step1.get('isDataChecked');
+    let element = _.assign(this.step1.get('isDataChecked'));
     element.setValue(!element.value);
   }
 
   // If checkbox triggered, add filled data to shiping data or disable inputs
   inputsStateToggle() {
+    let shipElements = _.pickBy(
+      this.step1.controls, 
+      (obj, key) => _.startsWith(key, 'ship')
+    );
+
     if(this.isDataChecked) {
-      for(let key in this.step1.controls) {
-        if(key.substring(0, 4) === 'ship') {
-          let dataKey = key.slice(4);
-          dataKey = dataKey.charAt(0).toLowerCase() + dataKey.slice(1);
-          this.step1.get(key).disable();
-          this.step1.get(key).setValue(this.step1.get(dataKey).value);
-        }
-      }
+      _.forEach(shipElements, (element, key) => {
+        let dataKey = key.slice(4);
+        dataKey = dataKey.charAt(0).toLowerCase() + dataKey.slice(1);
+        this.step1.get(key).disable();
+        this.step1.get(key).setValue(this.step1.get(dataKey).value);
+      });
     }
     else {
-      for(let key in this.step1.controls) {
-        if(key.substring(0, 4) === 'ship') {
-          this.step1.get(key).enable();
-        }
-      }
+      _.forEach(shipElements, element => element.enable());
     }
   }
 
   // watch for data changes
   shippingDataChange(form_element){
-    const form = this.step1;
-    if(form_element === 'country'){
-      let regex = form.get('country').value.Regex;
-      form.get('postalCode').setValidators([
-          Validators.required,
-          Validators.pattern(regex)
-      ]);
-      form.get('postalCode').updateValueAndValidity();
-    }
-    if(form_element === 'shipCountry'){
-      let regex = form.get('shipCountry').value.Regex;
-      form.get('shipPostalCode').setValidators([
-          Validators.required,
-          Validators.pattern(regex)
-      ]);
-      form.get('shipPostalCode').updateValueAndValidity();
-    }
-    if(form_element === 'legal'){
-      let value = form.get(form_element).value.label;
-      if(value === 'Company'){
-        this.isLegalCompany = true;
-        this.updateValidators(form.get('companyName'), [ Validators.required ]);
+    let form = _.assign(this.step1);
+    switch(form_element) {
+      case 'country': {
+        let regex = form.get(form_element).value.Regex;
+        form.get('postalCode').setValidators([
+            Validators.required,
+            Validators.pattern(regex)
+        ]);
+        form.get('postalCode').updateValueAndValidity();
+        break;
+      }
+
+      case 'shipCountry': {
+        let regex = form.get(form_element).value.Regex;
+        form.get('shipPostalCode').setValidators([
+            Validators.required,
+            Validators.pattern(regex)
+        ]);
+        form.get('shipPostalCode').updateValueAndValidity();
+        break;
+      }
+
+      case 'legal': {
+        let value = form.get(form_element).value.label;
+        if(value === 'Company'){
+          this.isLegalCompany = true;
+          this.updateValidators(form.get('companyName'), [ Validators.required ]);
+          return;
+        }
+        this.updateValidators(form.get('companyName'), []);
+        this.isLegalCompany = false;
+        form.get('companyName').setValue('');
         return;
       }
-      this.updateValidators(form.get('companyName'), []);
-      this.isLegalCompany = false;
-      form.get('companyName').setValue('');
-      return;
-    }
 
+      default: break;
+    }
+    
     // If checkbox checked, watch for data changes
     if(!this.isDataChecked) return;
     let shipKey = 'ship' + form_element.charAt(0).toUpperCase() + form_element.slice(1);

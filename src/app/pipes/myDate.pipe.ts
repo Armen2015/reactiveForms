@@ -6,7 +6,6 @@ export class MyDate implements PipeTransform {
     if(value == void 0 || value == null) return 'undefined';
     let newValue = '';
     newValue += value.substring(0, 2) + '/';
-   // newValue += value.substring(2, 4) + '/';
     newValue += value.substring(2);
     return newValue;
   }

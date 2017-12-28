@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, HostListener } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import * as _ from "lodash";
 
 @Component({
   selector: 'app-step3',
@@ -40,12 +41,11 @@ export class Step3Component implements OnInit {
   }
 
   nextBtn() {
-    const form = this.step3;
+    let form = _.assign(this.step3);
     this.step3SubmitAttempt = true;
     if (!form.valid) {
-      Object.keys(form.controls).forEach(field => { 
-        const control = form.get(field);            
-        control.markAsTouched({ onlySelf: true });       
+      _.forEach(form.controls, element => {         
+        element.markAsTouched({ onlySelf: true });       
       });
     } else {
         if(!this.cardDateValid || !this.cardNumberValid) return;
@@ -61,7 +61,6 @@ export class Step3Component implements OnInit {
 
   // Sets error class to an element, when it is not valid
   setClass(form_element: string) {
-    const form = this.step3;
     return {
       'input-error': this.isFieldValid(form_element)
     };
@@ -69,7 +68,7 @@ export class Step3Component implements OnInit {
 
   // Checks form element valid or not
   isFieldValid(form_element: string) {
-    let element = this.step3.get(form_element);
+    let element = _.assign(this.step3.get(form_element));
     return !element.valid && element.touched || (element.untouched && this.step3SubmitAttempt);
   }
 
@@ -103,7 +102,7 @@ export class Step3Component implements OnInit {
    
       if(cardDateYear === year && cardDateMonth > month) this.cardDateValid = true;
       if(cardDateYear < year) this.cardDateValid = false;
-      if( cardDateYear > year && cardDateYear <= (year + 10) ) this.cardDateValid = true;
+      if(cardDateYear > year && cardDateYear <= (year + 10)) this.cardDateValid = true;
     }
     else this.cardDateValid = false;
   }
@@ -140,25 +139,25 @@ export class Step3Component implements OnInit {
 
   // 
   detectCardType(number) {
-    let re = {
-        electron: /^(4026|417500|4405|4508|4844|4913|4917)\d+$/,
-        maestro: /^(5018|5020|5038|5612|5893|6304|6759|6761|6762|6763|0604|6390)\d+$/,
-        visa: /^4[0-9]{12}(?:[0-9]{3})?$/,
-        mastercard: /^5[1-5][0-9]{14}$/,
-        amex: /^3[47][0-9]{13}$/,
-        discover: /^6(?:011|5[0-9]{2})[0-9]{12}$/,
-        //dankort: /^(5019)\d+$/,
-        //interpayment: /^(636)\d+$/,
-        //unionpay: /^(62|88)\d+$/,
-        //diners: /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/,
-        //jcb: /^(?:2131|1800|35\d{3})\d{11}$/
+    let types = {
+      electron: /^(4026|417500|4405|4508|4844|4913|4917)\d+$/,
+      maestro: /^(5018|5020|5038|5612|5893|6304|6759|6761|6762|6763|0604|6390)\d+$/,
+      visa: /^4[0-9]{12}(?:[0-9]{3})?$/,
+      mastercard: /^5[1-5][0-9]{14}$/,
+      amex: /^3[47][0-9]{13}$/,
+      discover: /^6(?:011|5[0-9]{2})[0-9]{12}$/,
+      //dankort: /^(5019)\d+$/,
+      //interpayment: /^(636)\d+$/,
+      //unionpay: /^(62|88)\d+$/,
+      //diners: /^3(?:0[0-5]|[68][0-9])[0-9]{11}$/,
+      //jcb: /^(?:2131|1800|35\d{3})\d{11}$/
     }
 
-    for(let key in re) {
-        if(re[key].test(number)) {
-            return key
-        }
-    }
-    return null;
+    let cardType = null;
+    _.forEach(types, (value, key) => {           
+      if(value.test(number))  cardType = key
+    });
+
+    return cardType;
   }
 }
